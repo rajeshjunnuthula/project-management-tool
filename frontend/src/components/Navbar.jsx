@@ -12,7 +12,7 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="navbar-brand">
         <Link to="/" className="brand-logo">PM</Link>
-        <span className="brand-name">ProjectHub</span>
+        <span className="brand-name">Project Management Tool</span>
       </div>
       <div className="navbar-links">
         <Link to="/" className={`nav-link ${pathname === '/' ? 'active' : ''}`}>🏠 Dashboard</Link>
