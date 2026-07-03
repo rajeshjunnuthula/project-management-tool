@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
-import Navbar from '../components/Navbar';
 import ProjectModal from '../components/ProjectModal';
 
 export default function Projects() {
@@ -24,8 +23,7 @@ export default function Projects() {
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>;
 
   return (
-    <div className="app-layout">
-      <Navbar />
+    <>
       <main className="main-content">
         <div className="page-header">
           <div>
@@ -76,6 +74,6 @@ export default function Projects() {
         )}
       </main>
       {showModal && <ProjectModal onClose={() => setShowModal(false)} onCreated={handleCreated} />}
-    </div>
+    </>
   );
 }

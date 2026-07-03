@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import Navbar from '../components/Navbar';
 
 const PRIORITY_COLOR = { low: '#22c55e', medium: '#f59e0b', high: '#ef4444', urgent: '#7c3aed' };
 const STATUS_COLOR = { todo: '#94a3b8', 'in-progress': '#3b82f6', 'in-review': '#f59e0b', done: '#22c55e' };
@@ -45,9 +44,7 @@ export default function Dashboard() {
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>;
 
   return (
-    <div className="app-layout">
-      <Navbar />
-      <main className="main-content">
+    <main className="main-content">
         <div className="page-header">
           <div>
             <h1>Good {getGreeting()}, {user.name.split(' ')[0]} 👋</h1>
@@ -95,7 +92,6 @@ export default function Dashboard() {
             ))}
           </section>
         </div>
-      </main>
-    </div>
+    </main>
   );
 }

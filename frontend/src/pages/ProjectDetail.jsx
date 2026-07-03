@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import Navbar from '../components/Navbar';
 import KanbanBoard from '../components/KanbanBoard';
 import TaskModal from '../components/TaskModal';
 
@@ -74,8 +73,7 @@ export default function ProjectDetail() {
   };
 
   return (
-    <div className="app-layout">
-      <Navbar />
+    <>
       <main className="main-content">
         <div className="page-header">
           <div>
@@ -163,6 +161,6 @@ export default function ProjectDetail() {
           onClose={() => { setShowTaskModal(false); setEditingTask(null); }}
           onSaved={handleTaskSaved} />
       )}
-    </div>
+    </>
   );
 }
