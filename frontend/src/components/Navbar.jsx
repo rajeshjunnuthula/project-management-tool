@@ -8,20 +8,28 @@ export default function Navbar() {
 
   const handleLogout = () => { logout(); navigate('/login'); };
 
+  const linkClass = (active) =>
+    `flex items-center gap-1.5 rounded-sm px-3.5 py-1.5 text-[0.9rem] font-medium no-underline transition-all hover:bg-canvas hover:text-ink hover:no-underline ${active ? 'bg-primary-light text-primary' : 'text-ink-muted'}`;
+
   return (
-    <nav className="navbar">
-      <div className="navbar-brand">
-        <Link to="/" className="brand-logo">PM</Link>
-        <span className="brand-name">Project Management Tool</span>
+    <nav className="sticky top-0 z-[100] flex h-15 items-center gap-8 border-b border-border bg-surface px-8 shadow-sm">
+      <div className="flex items-center gap-2.5">
+        <Link to="/" className="flex h-9 w-9 items-center justify-center rounded-sm bg-primary text-sm font-extrabold text-white no-underline">PM</Link>
+        <span className="text-[1.1rem] font-bold text-ink">Project Management Tool</span>
       </div>
-      <div className="navbar-links">
-        <Link to="/" className={`nav-link ${pathname === '/' ? 'active' : ''}`}>🏠 Dashboard</Link>
-        <Link to="/projects" className={`nav-link ${pathname.startsWith('/projects') ? 'active' : ''}`}>📁 Projects</Link>
+      <div className="flex flex-1 gap-1">
+        <Link to="/" className={linkClass(pathname === '/')}>Dashboard</Link>
+        <Link to="/projects" className={linkClass(pathname.startsWith('/projects'))}>Projects</Link>
+        <Link to="/my-tasks" className={linkClass(pathname === '/my-tasks')}>My Tasks</Link>
+        <Link to="/tickets" className={linkClass(pathname === '/tickets')}>Tickets</Link>
+        <Link to="/milestones" className={linkClass(pathname === '/milestones')}>Milestones</Link>
       </div>
-      <div className="navbar-user">
-        <div className="avatar-sm avatar-nav"><span>{user?.name?.[0]?.toUpperCase()}</span></div>
-        <span className="user-name">{user?.name}</span>
-        <button className="btn btn-ghost btn-sm" onClick={handleLogout}>Logout</button>
+      <div className="ml-auto flex items-center gap-3">
+        <div className="flex h-[30px] w-[30px] items-center justify-center overflow-hidden rounded-full bg-primary text-xs font-bold text-white">
+          <span>{user?.name?.[0]?.toUpperCase()}</span>
+        </div>
+        <span className="text-sm font-medium">{user?.name}</span>
+        <button className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-transparent px-2.5 py-1.5 text-[0.8rem] font-medium text-ink-muted transition-all hover:bg-canvas" onClick={handleLogout}>Logout</button>
       </div>
     </nav>
   );

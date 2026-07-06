@@ -5,11 +5,20 @@ const memberSchema = new mongoose.Schema({
   role: { type: String, enum: ['owner', 'admin', 'member'], default: 'member' },
 }, { _id: false });
 
+const fileSchema = new mongoose.Schema({
+  filename: { type: String, required: true },
+  originalName: { type: String, required: true },
+  mimeType: { type: String, required: true },
+  size: { type: Number, required: true },
+  uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+}, { timestamps: true });
+
 const projectSchema = new mongoose.Schema({
   title: { type: String, required: true, trim: true },
   description: { type: String, default: '' },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   members: [memberSchema],
+  files: [fileSchema],
   status: { type: String, enum: ['active', 'on-hold', 'completed', 'archived'], default: 'active' },
   color: { type: String, default: '#6366f1' },
   deadline: { type: Date },

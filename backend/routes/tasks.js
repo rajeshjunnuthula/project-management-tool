@@ -12,15 +12,22 @@ const isMember = async (projectId, userId) => {
 
 router.get('/', async (req, res) => {
   try {
-    const { project } = req.query;
-    if (!project) return res.status(400).json({ message: 'project query param required' });
-    if (!(await isMember(project, req.user._id)))
-      return res.status(403).json({ message: 'Access denied' });
-    const tasks = await Task.find({ project })
+    const { project, mine } = req.query;
+    let query;
+    if (mine === 'true') {
+      query = { assignee: req.user._id };
+    } else {
+      if (!project) return res.status(400).json({ message: 'project query param required' });
+      if (!(await isMember(project, req.user._id)))
+        return res.status(403).json({ message: 'Access denied' });
+      query = { project };
+    }
+    const tasks = await Task.find(query)
       .populate('assignee', 'name email avatar')
       .populate('reporter', 'name email avatar')
+      .populate('project', 'title color')
       .populate('comments.user', 'name email avatar')
-      .sort('order');
+      .sort(mine === 'true' ? 'dueDate' : 'order');
     res.json(tasks);
   } catch (err) { res.status(500).json({ message: err.message }); }
 });

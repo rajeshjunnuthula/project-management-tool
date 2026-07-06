@@ -14,6 +14,8 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/projects', require('./routes/projects'));
 app.use('/api/tasks', require('./routes/tasks'));
+app.use('/api/tickets', require('./routes/tickets'));
+app.use('/api/milestones', require('./routes/milestones'));
 app.use('/api/users', require('./routes/users'));
 
 app.get('/api/health', (_, res) => res.json({ status: 'ok' }));

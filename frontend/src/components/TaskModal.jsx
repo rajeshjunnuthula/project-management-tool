@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import api from '../services/api';
+import { useForm } from '../hooks/useForm';
+import { ALERT_ERROR, AVATAR_XS, BTN_GHOST, BTN_PRIMARY, BTN_SM, FORM_GROUP, FORM_INPUT, FORM_LABEL, FORM_ROW, MODAL, MODAL_BODY, MODAL_CLOSE, MODAL_FOOTER, MODAL_HEADER, MODAL_OVERLAY } from '../lib/ui';
 
 const STATUSES = ['todo', 'in-progress', 'in-review', 'done'];
 const PRIORITIES = ['low', 'medium', 'high', 'urgent'];
 
 export default function TaskModal({ projectId, members, task, onClose, onSaved }) {
   const isEdit = !!task;
-  const [form, setForm] = useState({
+  const { form, set } = useForm({
     title: task?.title || '',
     description: task?.description || '',
     status: task?.status || 'todo',
@@ -19,8 +21,6 @@ export default function TaskModal({ projectId, members, task, onClose, onSaved }
   const [comments, setComments] = useState(task?.comments || []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  const set = (key, val) => setForm(f => ({ ...f, [key]: val }));
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setError(''); setLoading(true);
@@ -44,81 +44,81 @@ export default function TaskModal({ projectId, members, task, onClose, onSaved }
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2>{isEdit ? 'Edit Task' : 'New Task'}</h2>
-          <button className="modal-close" onClick={onClose}>✕</button>
+    <div className={MODAL_OVERLAY} onClick={onClose}>
+      <div className={MODAL} onClick={e => e.stopPropagation()}>
+        <div className={MODAL_HEADER}>
+          <h2 className="text-[1.2rem]">{isEdit ? 'Edit Task' : 'New Task'}</h2>
+          <button className={MODAL_CLOSE} onClick={onClose}>Close</button>
         </div>
-        {error && <div className="alert alert-error">{error}</div>}
+        {error && <div className={`mx-6 mt-4 ${ALERT_ERROR}`}>{error}</div>}
         <form onSubmit={handleSubmit}>
-          <div className="modal-body">
-            <div className="form-group">
-              <label>Title *</label>
-              <input value={form.title} onChange={e => set('title', e.target.value)} placeholder="Task title" required />
+          <div className={MODAL_BODY}>
+            <div className={FORM_GROUP}>
+              <label className={FORM_LABEL}>Title *</label>
+              <input value={form.title} onChange={e => set('title', e.target.value)} placeholder="Task title" required className={FORM_INPUT} />
             </div>
-            <div className="form-group">
-              <label>Description</label>
-              <textarea value={form.description} onChange={e => set('description', e.target.value)} placeholder="Describe the task..." rows={3} />
+            <div className={FORM_GROUP}>
+              <label className={FORM_LABEL}>Description</label>
+              <textarea value={form.description} onChange={e => set('description', e.target.value)} placeholder="Describe the task..." rows={3} className={FORM_INPUT} />
             </div>
-            <div className="form-row">
-              <div className="form-group">
-                <label>Status</label>
-                <select value={form.status} onChange={e => set('status', e.target.value)}>
+            <div className={FORM_ROW}>
+              <div className={FORM_GROUP}>
+                <label className={FORM_LABEL}>Status</label>
+                <select value={form.status} onChange={e => set('status', e.target.value)} className={FORM_INPUT}>
                   {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
-              <div className="form-group">
-                <label>Priority</label>
-                <select value={form.priority} onChange={e => set('priority', e.target.value)}>
+              <div className={FORM_GROUP}>
+                <label className={FORM_LABEL}>Priority</label>
+                <select value={form.priority} onChange={e => set('priority', e.target.value)} className={FORM_INPUT}>
                   {PRIORITIES.map(p => <option key={p} value={p}>{p}</option>)}
                 </select>
               </div>
             </div>
-            <div className="form-row">
-              <div className="form-group">
-                <label>Assignee</label>
-                <select value={form.assignee} onChange={e => set('assignee', e.target.value)}>
+            <div className={FORM_ROW}>
+              <div className={FORM_GROUP}>
+                <label className={FORM_LABEL}>Assignee</label>
+                <select value={form.assignee} onChange={e => set('assignee', e.target.value)} className={FORM_INPUT}>
                   <option value="">Unassigned</option>
                   {members.map(m => <option key={m.user._id} value={m.user._id}>{m.user.name}</option>)}
                 </select>
               </div>
-              <div className="form-group">
-                <label>Due Date</label>
-                <input type="date" value={form.dueDate} onChange={e => set('dueDate', e.target.value)} />
+              <div className={FORM_GROUP}>
+                <label className={FORM_LABEL}>Due Date</label>
+                <input type="date" value={form.dueDate} onChange={e => set('dueDate', e.target.value)} className={FORM_INPUT} />
               </div>
             </div>
-            <div className="form-group">
-              <label>Labels (comma-separated)</label>
-              <input value={form.labels} onChange={e => set('labels', e.target.value)} placeholder="frontend, bug, feature" />
+            <div className={FORM_GROUP}>
+              <label className={FORM_LABEL}>Labels (comma-separated)</label>
+              <input value={form.labels} onChange={e => set('labels', e.target.value)} placeholder="frontend, bug, feature" className={FORM_INPUT} />
             </div>
           </div>
-          <div className="modal-footer">
-            <button type="button" className="btn btn-ghost" onClick={onClose}>Cancel</button>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
+          <div className={MODAL_FOOTER}>
+            <button type="button" className={BTN_GHOST} onClick={onClose}>Cancel</button>
+            <button type="submit" className={BTN_PRIMARY} disabled={loading}>
               {loading ? 'Saving...' : isEdit ? 'Update Task' : 'Create Task'}
             </button>
           </div>
         </form>
         {isEdit && (
-          <div className="comments-section">
-            <h3>Comments ({comments.length})</h3>
-            <div className="comments-list">
+          <div className="mt-1 border-t border-border px-6 pb-6">
+            <h3 className="mb-3 pt-4">Comments ({comments.length})</h3>
+            <div className="mb-4 flex max-h-[200px] flex-col gap-3 overflow-y-auto">
               {comments.map((c, i) => (
-                <div key={i} className="comment">
-                  <div className="avatar-xs"><span>{c.user?.name?.[0] || '?'}</span></div>
-                  <div className="comment-body">
-                    <span className="comment-author">{c.user?.name}</span>
-                    <p>{c.content}</p>
-                    <span className="comment-time">{new Date(c.createdAt).toLocaleString()}</span>
+                <div key={i} className="flex gap-2.5">
+                  <div className={AVATAR_XS}><span>{c.user?.name?.[0] || '?'}</span></div>
+                  <div className="flex-1">
+                    <span className="mr-1.5 text-[0.8rem] font-semibold">{c.user?.name}</span>
+                    <p className="text-[0.85rem] text-ink">{c.content}</p>
+                    <span className="text-[0.72rem] text-ink-muted">{new Date(c.createdAt).toLocaleString()}</span>
                   </div>
                 </div>
               ))}
-              {comments.length === 0 && <p className="text-muted text-sm">No comments yet</p>}
+              {comments.length === 0 && <p className="text-sm text-ink-muted">No comments yet</p>}
             </div>
-            <form onSubmit={handleAddComment} className="comment-form">
-              <input value={comment} onChange={e => setComment(e.target.value)} placeholder="Add a comment..." />
-              <button type="submit" className="btn btn-primary btn-sm">Post</button>
+            <form onSubmit={handleAddComment} className="flex gap-2.5">
+              <input value={comment} onChange={e => setComment(e.target.value)} placeholder="Add a comment..." className={`flex-1 ${FORM_INPUT}`} />
+              <button type="submit" className={`${BTN_PRIMARY} ${BTN_SM}`}>Post</button>
             </form>
           </div>
         )}

@@ -6,6 +6,9 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
+import MyTasks from './pages/MyTasks';
+import Tickets from './pages/Tickets';
+import Milestones from './pages/Milestones';
 
 export default function App() {
   return (
@@ -18,6 +21,9 @@ export default function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/projects" element={<Projects />} />
             <Route path="/projects/:id" element={<ProjectDetail />} />
+            <Route path="/my-tasks" element={<MyTasks />} />
+            <Route path="/tickets" element={<Tickets />} />
+            <Route path="/milestones" element={<Milestones />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

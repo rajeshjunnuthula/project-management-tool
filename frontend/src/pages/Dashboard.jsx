@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useFetch } from '../hooks/useFetch';
+import PageSpinner from '../components/PageSpinner';
+import { BADGE_BASE, PRIORITY_DOT, PROJECT_STATUS_COLOR, STATUS_PILL_BASE, TASK_STATUS_COLOR } from '../lib/badgeStyles';
+import { BTN_PRIMARY, CARD } from '../lib/ui';
 
-const PRIORITY_COLOR = { low: '#22c55e', medium: '#f59e0b', high: '#ef4444', urgent: '#7c3aed' };
-const STATUS_COLOR = { todo: '#94a3b8', 'in-progress': '#3b82f6', 'in-review': '#f59e0b', done: '#22c55e' };
+const STATS_ICON_BG = ['bg-primary-light', 'bg-green-100', 'bg-blue-100', 'bg-red-100', 'bg-violet-100', 'bg-amber-100'];
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -15,79 +17,79 @@ function getGreeting() {
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [projects, setProjects] = useState([]);
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const { data: projs } = await api.get('/projects');
-        setProjects(projs);
-        const results = await Promise.all(projs.slice(0, 5).map(p => api.get(`/tasks?project=${p._id}`)));
-        setTasks(results.flatMap(r => r.data));
-      } catch (err) { console.error(err); }
-      finally { setLoading(false); }
-    };
-    load();
+  const { data, loading } = useFetch(async () => {
+    const [{ data: projs }, { data: myTasks }, { data: tickets }, { data: milestones }] = await Promise.all([
+      api.get('/projects'),
+      api.get('/tasks?mine=true'),
+      api.get('/tickets'),
+      api.get('/milestones'),
+    ]);
+    return { projects: projs, myTasks, tickets, milestones };
   }, []);
+  const projects = data?.projects || [];
+  const myTasks = data?.myTasks || [];
+  const tickets = data?.tickets || [];
+  const milestones = data?.milestones || [];
 
-  const myTasks = tasks.filter(t => t.assignee?._id === user._id);
-  const overdueTasks = tasks.filter(t => t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'done');
+  const overdueTasks = myTasks.filter(t => t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'done');
+  const openTickets = tickets.filter(t => t.status === 'open');
+  const upcomingMilestones = milestones.filter(m => !m.completed && new Date(m.dueDate) >= new Date());
   const stats = [
-    { label: 'Total Projects', value: projects.length, icon: '📁', color: '#6366f1' },
-    { label: 'Active', value: projects.filter(p => p.status === 'active').length, icon: '🚀', color: '#22c55e' },
-    { label: 'My Tasks', value: myTasks.length, icon: '✅', color: '#3b82f6' },
-    { label: 'Overdue', value: overdueTasks.length, icon: '⚠️', color: '#ef4444' },
+    { label: 'Total Projects', value: projects.length, icon: 'TP', to: '/projects' },
+    { label: 'Active', value: projects.filter(p => p.status === 'active').length, icon: 'ACT', to: '/projects?status=active' },
+    { label: 'My Tasks', value: myTasks.length, icon: 'MT', to: '/my-tasks' },
+    { label: 'Overdue', value: overdueTasks.length, icon: 'OD', to: '/my-tasks?filter=overdue' },
+    { label: 'Open Tickets', value: openTickets.length, icon: 'OT', to: '/tickets?status=open' },
+    { label: 'Milestones', value: upcomingMilestones.length, icon: 'MS', to: '/milestones?status=upcoming' },
   ];
 
-  if (loading) return <div className="loading-screen"><div className="spinner" /></div>;
+  if (loading) return <PageSpinner />;
 
   return (
-    <main className="main-content">
-        <div className="page-header">
+    <main className="mx-auto w-full max-w-[1400px] flex-1 px-8 py-6">
+        <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1>Good {getGreeting()}, {user.name.split(' ')[0]} 👋</h1>
-            <p className="text-muted">Here&apos;s what&apos;s happening with your projects</p>
+            <h1 className="mb-1">Good {getGreeting()}, {user.name.split(' ')[0]}</h1>
+            <p className="text-ink-muted">Here&apos;s what&apos;s happening with your projects</p>
           </div>
-          <Link to="/projects" className="btn btn-primary">+ New Project</Link>
+          <Link to="/projects" className={BTN_PRIMARY}>+ New Project</Link>
         </div>
-        <div className="stats-grid">
-          {stats.map(s => (
-            <div key={s.label} className="stat-card" style={{ borderTop: `3px solid ${s.color}` }}>
-              <div className="stat-icon">{s.icon}</div>
-              <div><div className="stat-value">{s.value}</div><div className="stat-label">{s.label}</div></div>
-            </div>
+        <div className="mb-6 grid grid-cols-3 gap-4 max-[1024px]:grid-cols-2 max-[640px]:grid-cols-1">
+          {stats.map((s, i) => (
+            <Link key={s.label} to={s.to} className="flex items-center gap-4 rounded-xl border border-border bg-surface p-5 text-ink shadow-sm no-underline transition-all hover:-translate-y-0.5 hover:shadow-md hover:no-underline">
+              <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-ink ${STATS_ICON_BG[i]}`}>{s.icon}</div>
+              <div><div className="text-3xl font-semibold leading-none text-ink">{s.value}</div><div className="mt-1.5 text-[0.8rem] text-ink-muted">{s.label}</div></div>
+            </Link>
           ))}
         </div>
-        <div className="dashboard-grid">
-          <section className="card">
-            <h2 className="section-title">Recent Projects</h2>
+        <div className="grid grid-cols-2 gap-5">
+          <section className={CARD}>
+            <h2 className="mb-4 text-base font-semibold text-ink">Recent Projects</h2>
             {projects.length === 0 ? (
-              <div className="empty-state"><p>No projects yet. <Link to="/projects">Create your first project</Link></p></div>
+              <div className="p-12 text-center"><p>No projects yet. <Link to="/projects">Create your first project</Link></p></div>
             ) : projects.slice(0, 5).map(p => (
-              <Link key={p._id} to={`/projects/${p._id}`} className="project-row">
-                <span className="project-dot" style={{ background: p.color }} />
-                <div className="project-row-info">
-                  <span className="project-row-title">{p.title}</span>
-                  <span className="project-row-meta">{p.members.length} members</span>
+              <Link key={p._id} to={`/projects/${p._id}`} className="flex items-center gap-3 rounded-sm px-2 py-2.5 text-ink no-underline transition-colors hover:bg-canvas hover:no-underline">
+                <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: p.color }} />
+                <div className="flex-1">
+                  <span className="block text-[0.9rem] font-medium">{p.title}</span>
+                  <span className="text-xs text-ink-muted">{p.members.length} members</span>
                 </div>
-                <span className={`badge badge-${p.status}`}>{p.status}</span>
+                <span className={`${BADGE_BASE} ${PROJECT_STATUS_COLOR[p.status]}`}>{p.status}</span>
               </Link>
             ))}
           </section>
-          <section className="card">
-            <h2 className="section-title">My Tasks</h2>
+          <section className={CARD}>
+            <h2 className="mb-4 text-base font-semibold text-ink">My Tasks</h2>
             {myTasks.length === 0 ? (
-              <div className="empty-state"><p>No tasks assigned to you</p></div>
+              <div className="p-12 text-center"><p>No tasks assigned to you</p></div>
             ) : myTasks.slice(0, 6).map(t => (
-              <div key={t._id} className="task-row">
-                <span className="priority-dot" style={{ background: PRIORITY_COLOR[t.priority] }} />
-                <div className="task-row-info">
-                  <span className="task-row-title">{t.title}</span>
-                  {t.dueDate && <span className={`task-due ${new Date(t.dueDate) < new Date() ? 'overdue' : ''}`}>{new Date(t.dueDate).toLocaleDateString()}</span>}
+              <div key={t._id} className="flex items-center gap-2.5 rounded-sm p-2">
+                <span className={`h-2 w-2 shrink-0 rounded-full ${PRIORITY_DOT[t.priority]}`} />
+                <div className="flex-1">
+                  <span className="text-sm text-ink">{t.title}</span>
+                  {t.dueDate && <span className={`ml-1.5 text-xs text-ink-muted ${new Date(t.dueDate) < new Date() ? 'text-danger' : ''}`}>{new Date(t.dueDate).toLocaleDateString()}</span>}
                 </div>
-                <span className="status-badge" style={{ background: STATUS_COLOR[t.status] + '22', color: STATUS_COLOR[t.status] }}>{t.status}</span>
+                <span className={`${STATUS_PILL_BASE} ${TASK_STATUS_COLOR[t.status]}`}>{t.status}</span>
               </div>
             ))}
           </section>
