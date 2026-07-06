@@ -9,7 +9,7 @@ import TicketModal from '../components/TicketModal';
 import MilestoneModal from '../components/MilestoneModal';
 import PageSpinner from '../components/PageSpinner';
 import { BADGE_BASE, MILESTONE_STATUS_COLOR, PRIORITY_BADGE_BASE, PRIORITY_COLOR, PROJECT_STATUS_COLOR, TASK_STATUS_COLOR, TICKET_STATUS_COLOR, TICKET_TYPE_LABEL } from '../lib/badgeStyles';
-import { ALERT_ERROR, AVATAR_MD, BTN_DANGER, BTN_PRIMARY, CARD, FORM_INPUT } from '../lib/ui';
+import { ALERT_ERROR, AVATAR_MD, BTN_DANGER, BTN_PRIMARY, CARD, FORM_INPUT, NEUTRAL_BADGE } from '../lib/ui';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -235,7 +235,7 @@ export default function ProjectDetail() {
               <div className="flex flex-col gap-2">
                 {tickets.map(t => (
                   <div key={t._id} className="flex items-center gap-3 rounded-sm border border-border p-3">
-                    <span className={`${BADGE_BASE} bg-slate-100 text-slate-600`}>{TICKET_TYPE_LABEL[t.type]}</span>
+                    <span className={`${BADGE_BASE} ${NEUTRAL_BADGE}`}>{TICKET_TYPE_LABEL[t.type]}</span>
                     <div className="flex-1">
                       <div className="text-[0.9rem] font-medium text-ink">{t.title}</div>
                       <div className="text-xs text-ink-muted">Reported by {t.reporter?.name || 'Unknown'} · {t.assignee ? `Assigned to ${t.assignee.name}` : 'Unassigned'}</div>
@@ -295,7 +295,7 @@ export default function ProjectDetail() {
               <div className="flex flex-col gap-2">
                 {project.files.map(f => (
                   <div key={f._id} className="flex items-center gap-3 rounded-sm border border-border p-3">
-                    <span className={`${BADGE_BASE} bg-slate-100 text-slate-600`}>File</span>
+                    <span className={`${BADGE_BASE} ${NEUTRAL_BADGE}`}>File</span>
                     <div className="flex-1">
                       <div className="text-[0.9rem] font-medium text-ink">{f.originalName}</div>
                       <div className="text-xs text-ink-muted">{formatBytes(f.size)} · Uploaded by {f.uploadedBy?.name || 'Unknown'} on {new Date(f.createdAt).toLocaleDateString()}</div>

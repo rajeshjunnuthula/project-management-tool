@@ -1,8 +1,10 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../hooks/useTheme';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -29,6 +31,9 @@ export default function Navbar() {
           <span>{user?.name?.[0]?.toUpperCase()}</span>
         </div>
         <span className="text-sm font-medium">{user?.name}</span>
+        <button className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-transparent px-2.5 py-1.5 text-[0.8rem] font-medium text-ink-muted transition-all hover:bg-canvas" onClick={toggleTheme}>
+          {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+        </button>
         <button className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-transparent px-2.5 py-1.5 text-[0.8rem] font-medium text-ink-muted transition-all hover:bg-canvas" onClick={handleLogout}>Logout</button>
       </div>
     </nav>

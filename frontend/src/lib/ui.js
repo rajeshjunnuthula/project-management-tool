@@ -10,13 +10,16 @@ export const FORM_LABEL = 'text-sm font-medium text-ink';
 export const FORM_INPUT = 'rounded-sm border border-border bg-surface px-3 py-2.5 text-[0.9rem] text-ink outline-none transition-colors focus:border-primary focus:shadow-[0_0_0_3px_var(--color-primary-light)]';
 export const FORM_ROW = 'grid grid-cols-2 gap-4';
 
-export const ALERT_ERROR = 'mb-3 rounded-sm border border-red-300 bg-danger-light px-3.5 py-2.5 text-sm text-red-700';
+export const ALERT_ERROR = 'mb-3 rounded-sm border border-red-300 bg-danger-light px-3.5 py-2.5 text-sm text-red-700 dark:border-red-800 dark:text-red-300';
 
 export const CARD = 'rounded-xl border border-border bg-surface p-6 shadow-sm';
 
-export const AVATAR_XS = 'flex h-[22px] w-[22px] items-center justify-center overflow-hidden rounded-full bg-primary-light text-[10px] font-bold text-primary';
-export const AVATAR_SM = 'flex h-[30px] w-[30px] items-center justify-center overflow-hidden rounded-full bg-primary-light text-xs font-bold text-primary';
-export const AVATAR_MD = 'flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-primary-light text-base font-bold text-primary';
+export const NEUTRAL_BADGE = 'bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300';
+export const INFO_BADGE = 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300';
+
+export const AVATAR_XS = 'flex h-[22px] w-[22px] items-center justify-center overflow-hidden rounded-full bg-primary-light text-[10px] font-bold text-primary dark:text-indigo-300';
+export const AVATAR_SM = 'flex h-[30px] w-[30px] items-center justify-center overflow-hidden rounded-full bg-primary-light text-xs font-bold text-primary dark:text-indigo-300';
+export const AVATAR_MD = 'flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-primary-light text-base font-bold text-primary dark:text-indigo-300';
 export const AVATAR_STACK = '[&>*]:border-2 [&>*]:border-surface [&>*:not(:first-child)]:-ml-1.5';
 
 export const MODAL_OVERLAY = 'fixed inset-0 z-[1000] flex items-center justify-center bg-black/50 p-5';

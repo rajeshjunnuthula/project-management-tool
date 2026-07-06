@@ -5,7 +5,7 @@ import { useFetch } from '../hooks/useFetch';
 import TicketModal from '../components/TicketModal';
 import PageSpinner from '../components/PageSpinner';
 import { BADGE_BASE, PRIORITY_BADGE_BASE, PRIORITY_COLOR, TICKET_STATUS_COLOR, TICKET_TYPE_LABEL } from '../lib/badgeStyles';
-import { BTN_PRIMARY, CARD } from '../lib/ui';
+import { BTN_PRIMARY, CARD, NEUTRAL_BADGE } from '../lib/ui';
 
 const FILTERS = ['all', 'open', 'in-progress', 'resolved', 'closed'];
 
@@ -60,7 +60,7 @@ export default function Tickets() {
           <div className="flex flex-col gap-2">
             {filtered.map(t => (
               <div key={t._id} className={`${CARD} flex items-center gap-3 p-3`}>
-                <span className={`${BADGE_BASE} bg-slate-100 text-slate-600`}>{TICKET_TYPE_LABEL[t.type]}</span>
+                <span className={`${BADGE_BASE} ${NEUTRAL_BADGE}`}>{TICKET_TYPE_LABEL[t.type]}</span>
                 <div className="flex-1">
                   <div className="text-[0.9rem] font-medium text-ink">
                     {t.project ? <Link to={`/projects/${t.project._id}`} className="text-ink hover:underline">{t.title}</Link> : t.title}

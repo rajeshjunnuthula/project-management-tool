@@ -6,7 +6,14 @@ import PageSpinner from '../components/PageSpinner';
 import { BADGE_BASE, PRIORITY_DOT, PROJECT_STATUS_COLOR, STATUS_PILL_BASE, TASK_STATUS_COLOR } from '../lib/badgeStyles';
 import { BTN_PRIMARY, CARD } from '../lib/ui';
 
-const STATS_ICON_BG = ['bg-primary-light', 'bg-green-100', 'bg-blue-100', 'bg-red-100', 'bg-violet-100', 'bg-amber-100'];
+const STATS_ICON_BG = [
+  'bg-primary-light text-primary dark:text-indigo-300',
+  'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
+  'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
+  'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
+  'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300',
+  'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+];
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -57,7 +64,7 @@ export default function Dashboard() {
         <div className="mb-6 grid grid-cols-3 gap-4 max-[1024px]:grid-cols-2 max-[640px]:grid-cols-1">
           {stats.map((s, i) => (
             <Link key={s.label} to={s.to} className="flex items-center gap-4 rounded-xl border border-border bg-surface p-5 text-ink shadow-sm no-underline transition-all hover:-translate-y-0.5 hover:shadow-md hover:no-underline">
-              <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-ink ${STATS_ICON_BG[i]}`}>{s.icon}</div>
+              <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-sm font-bold ${STATS_ICON_BG[i]}`}>{s.icon}</div>
               <div><div className="text-3xl font-semibold leading-none text-ink">{s.value}</div><div className="mt-1.5 text-[0.8rem] text-ink-muted">{s.label}</div></div>
             </Link>
           ))}

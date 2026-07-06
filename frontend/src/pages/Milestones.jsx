@@ -5,7 +5,7 @@ import { useFetch } from '../hooks/useFetch';
 import MilestoneModal from '../components/MilestoneModal';
 import PageSpinner from '../components/PageSpinner';
 import { BADGE_BASE, MILESTONE_STATUS_COLOR } from '../lib/badgeStyles';
-import { BTN_PRIMARY, CARD } from '../lib/ui';
+import { BTN_PRIMARY, CARD, INFO_BADGE } from '../lib/ui';
 
 const FILTERS = ['all', 'upcoming', 'overdue', 'completed'];
 
@@ -62,7 +62,7 @@ export default function Milestones() {
           <div className="flex flex-col gap-2">
             {filtered.map(m => (
               <div key={m._id} className={`${CARD} flex items-center gap-3 p-3`}>
-                <span className={`${BADGE_BASE} bg-blue-100 text-blue-600`}>Milestone</span>
+                <span className={`${BADGE_BASE} ${INFO_BADGE}`}>Milestone</span>
                 <div className="flex-1">
                   <div className={`text-[0.9rem] font-medium ${m.completed ? 'text-ink-muted line-through' : 'text-ink'}`}>
                     {m.project ? <Link to={`/projects/${m.project._id}`} className="text-ink hover:underline">{m.title}</Link> : m.title}
